@@ -4,7 +4,7 @@
 #     include:
 #     - main
 #     - feature/**
-
+trigger: none
 pool: MyAgentPool
 
 stages:
