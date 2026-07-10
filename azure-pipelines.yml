@@ -25,12 +25,20 @@ stages:
           command: 'custom'
           workingDir: '$(System.DefaultWorkingDirectory)'
           customCommand: 'run build'
+
       - task: PublishBuildArtifacts@1
         displayName: Publish Build Artifacts
         inputs:
-          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)/build'
           ArtifactName: 'build'
           publishLocation: 'Container'
+
+- stage: Download
+  displayName: Download
+  jobs:
+   - job: Download
+     displayName: Download
+     steps:
       - task: DownloadBuildArtifacts@1
         displayName: Download Build Artifacts
         inputs:
