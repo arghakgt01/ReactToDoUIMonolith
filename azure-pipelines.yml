@@ -45,4 +45,10 @@ stages:
           buildType: 'current'
           downloadType: 'single'
           downloadPath: '$(System.ArtifactsDirectory)'
-
+      - task: CopyFilesOverSSH@0
+        inputs:
+          sshEndpoint: 'ssh_connection'
+          sourceFolder: '$(System.ArtifactsDirectory)/build/'
+          contents: '**'
+          targetFolder: '/var/www/html/'
+          readyTimeout: '20000'
