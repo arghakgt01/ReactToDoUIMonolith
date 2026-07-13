@@ -33,22 +33,23 @@ stages:
           ArtifactName: 'build'
           publishLocation: 'Container'
 
-- stage: Download
-  displayName: Download
+- stage: Deploy
+  displayName: Deploy
   jobs:
-   - job: Download
-     displayName: Download
-     steps:
-      - task: DownloadBuildArtifacts@1
-        displayName: Download Build Artifacts
-        inputs:
-          buildType: 'current'
-          downloadType: 'single'
-          downloadPath: '$(System.ArtifactsDirectory)'
-      - task: CopyFilesOverSSH@0
-        inputs:
-          sshEndpoint: 'ssh_connection'
-          sourceFolder: '$(System.ArtifactsDirectory)/build/'
-          contents: '**'
-          targetFolder: '/var/www/html/'
-          readyTimeout: '20000'
+   - deployment: DeployToStaging
+     displayName: Deploy To Staging
+
+     environment:
+      name: Staging
+      resourceType: VirtualMachine
+
+     strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: build
+
+          - script: |
+              sudo cp -r $(Pipeline.Workspace)/build/* /var/www/html/
+            displayName: Copy website files
