@@ -19,6 +19,11 @@ stages:
         inputs:
           command: 'install'
           workingDir: '$(System.DefaultWorkingDirectory)'
+      - task: CmdLine@2
+        displayName: Run Biome CI Validation
+        inputs:
+          script: 'biome ci .'
+          workingDir: '$(System.DefaultWorkingDirectory)'
       - task: Npm@1
         displayName: npm run build
         inputs:
