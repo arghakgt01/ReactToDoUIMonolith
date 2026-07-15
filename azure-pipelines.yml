@@ -38,26 +38,26 @@ stages:
           ArtifactName: 'build'
           publishLocation: 'Container'
 
-- stage: Deploy
-  displayName: Deploy
-  jobs:
-   - deployment: DeployToStaging
-     displayName: Deploy To Staging
+# - stage: Deploy
+#   displayName: Deploy
+#   jobs:
+#    - deployment: DeployToStaging
+#      displayName: Deploy To Staging
 
-     environment:
-      name: Staging
-      resourceType: VirtualMachine
+#      environment:
+#       name: Staging
+#       resourceType: VirtualMachine
 
-     strategy:
-      runOnce:
-        deploy:
-          steps:
-          - download: current
-            artifact: build
+#      strategy:
+#       runOnce:
+#         deploy:
+#           steps:
+#           - download: current
+#             artifact: build
 
-          - script: |
-              sudo cp -r $(Pipeline.Workspace)/build/* /var/www/html/
-            displayName: Copy website files
+#           - script: |
+#               sudo cp -r $(Pipeline.Workspace)/build/* /var/www/html/
+#             displayName: Copy website files
    
   #  - deployment: DeployToQA
   #    displayName: Deploy To QA
