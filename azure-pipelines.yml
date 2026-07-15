@@ -14,33 +14,42 @@ stages:
    - job: Build
      displayName: Build
      steps:
-      - task: Npm@1
-        displayName: npm install
+      # - task: Npm@1
+      #   displayName: npm install
+      #   inputs:
+      #     command: 'install'
+      #     workingDir: '$(System.DefaultWorkingDirectory)'
+
+# 1. RUN BIOME AND OUTPUT JUNIT XML
+      - task: CmdLine@2
+        displayName: Run Biome CI & Generate XML Report
+        continueOnError: true # Forces pipeline to continue so Azure can publish the report
         inputs:
-          command: 'install'
+          script: 'biome ci --reporter=junit --reporter-file=$(System.DefaultWorkingDirectory)/biome-results.xml .'
           workingDir: '$(System.DefaultWorkingDirectory)'
 
-      - task: PowerShell@2
-        displayName: Run Biome CI Validation
-        continueOnError: true
+      # 2. PUBLISH JUNIT REPORT TO AZURE DEVOP'S "TESTS" TAB
+      - task: PublishTestResults@2
+        displayName: Publish Biome Test Results
         inputs:
-          targetType: 'inline'
-          script: |
-            $ReportPath = "$(Common.TestResultsDirectory)\biome-results.xml"
-            biome ci --reporter=junit --reporter-file=$ReportPath .
-      - task: Npm@1
-        displayName: npm run build
-        inputs:
-          command: 'custom'
-          workingDir: '$(System.DefaultWorkingDirectory)'
-          customCommand: 'run build'
+          testResultsFormat: 'JUnit'
+          testResultsFiles: 'biome-results.xml'
+          searchFolder: '$(System.DefaultWorkingDirectory)'
+          testRunTitle: 'Biome Lint & Format Checks'
+        condition: always() # Guarantees execution even if the script step fails
+      # - task: Npm@1
+      #   displayName: npm run build
+      #   inputs:
+      #     command: 'custom'
+      #     workingDir: '$(System.DefaultWorkingDirectory)'
+      #     customCommand: 'run build'
 
-      - task: PublishBuildArtifacts@1
-        displayName: Publish Build Artifacts
-        inputs:
-          PathtoPublish: '$(System.DefaultWorkingDirectory)/build'
-          ArtifactName: 'build'
-          publishLocation: 'Container'
+      # - task: PublishBuildArtifacts@1
+      #   displayName: Publish Build Artifacts
+      #   inputs:
+      #     PathtoPublish: '$(System.DefaultWorkingDirectory)/build'
+      #     ArtifactName: 'build'
+      #     publishLocation: 'Container'
 
 # - stage: Deploy
 #   displayName: Deploy
