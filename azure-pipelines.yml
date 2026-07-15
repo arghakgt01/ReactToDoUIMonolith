@@ -53,3 +53,39 @@ stages:
           - script: |
               sudo cp -r $(Pipeline.Workspace)/build/* /var/www/html/
             displayName: Copy website files
+   
+  #  - deployment: DeployToQA
+  #    displayName: Deploy To QA
+
+  #    environment:
+  #     name: QA
+  #     resourceType: VirtualMachine
+
+  #    strategy:
+  #     runOnce:
+  #       deploy:
+  #         steps:
+  #         - download: current
+  #           artifact: build
+
+  #         - script: |
+  #             sudo cp -r $(Pipeline.Workspace)/build/* /var/www/html/
+  #           displayName: Copy website files
+   
+  #  - deployment: DeployToProduction
+  #    displayName: Deploy To Production
+
+  #    environment:
+  #     name: Production
+  #     resourceType: VirtualMachine
+
+  #    strategy:
+  #     runOnce:
+  #       deploy:
+  #         steps:
+  #         - download: current
+  #           artifact: build
+
+  #         - script: |
+  #             sudo cp -r $(Pipeline.Workspace)/build/* /var/www/html/
+  #           displayName: Copy website files
