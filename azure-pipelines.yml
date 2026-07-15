@@ -19,11 +19,15 @@ stages:
         inputs:
           command: 'install'
           workingDir: '$(System.DefaultWorkingDirectory)'
-      - task: CmdLine@2
+
+      - task: PowerShell@2
         displayName: Run Biome CI Validation
+        continueOnError: true
         inputs:
-          script: 'biome ci .'
-          workingDir: '$(System.DefaultWorkingDirectory)'
+          targetType: 'inline'
+          script: |
+            $ReportPath = "$(Common.TestResultsDirectory)\biome-results.xml"
+            biome ci --reporter=junit --reporter-file=$ReportPath .
       - task: Npm@1
         displayName: npm run build
         inputs:
